@@ -1,5 +1,3 @@
-
-
 // ==========================================
 // 2. MAIN APP COMPONENT
 // ==========================================
@@ -728,6 +726,7 @@ function HardwareTestView({ device, deviceId, onDeviceChange, onDeviceUpdate, de
 
   useEffect(() => {
     let isActive = true;
+    let nextCheckTimeout;
 
     const runChecks = async () => {
       setChecking(true);
@@ -828,15 +827,15 @@ function HardwareTestView({ device, deviceId, onDeviceChange, onDeviceUpdate, de
         setChecks(nextChecks);
         setCheckedAt(new Date());
         setChecking(false);
+        nextCheckTimeout = window.setTimeout(runChecks, 5000);
       }
     };
 
     runChecks();
-    const interval = window.setInterval(runChecks, 5000);
 
     return () => {
       isActive = false;
-      window.clearInterval(interval);
+      window.clearTimeout(nextCheckTimeout);
     };
   }, [deviceId, onDeviceUpdate, refreshKey]);
 
